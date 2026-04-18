@@ -2,143 +2,47 @@
 <html>
 <head>
     <title>Car Price Predictor</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1f1c2c, #928dab);
-            color: white;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0px 8px 32px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        label {
-            font-size: 14px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            margin-top: 5px;
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
-        button {
-            padding: 12px;
-            background: #00c853;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #00e676;
-        }
-
-        .result-card {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(0, 255, 200, 0.15);
-            text-align: center;
-            font-size: 18px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            opacity: 0.7;
-        }
-    </style>
-
-    <script>
-        function validateForm() {
-            let inputs = document.querySelectorAll("input");
-            for (let i of inputs) {
-                if (i.value <= 0) {
-                    alert("Please enter valid positive values!");
-                    return false;
-                }
-            }
-            return true;
-        }
-    </script>
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
 <div class="container">
 
-    <h1>🚗 Smart Car Price Predictor</h1>
+<h1>🚗 Smart Car Price Predictor</h1>
 
-    <form action="/predict" method="post" onsubmit="return validateForm()">
+<form action="/predict" method="post">
 
-        <div>
-            <label>Horsepower</label>
-            <input type="number" name="horsepower" placeholder="e.g. 120" required>
-        </div>
+<input type="number" name="horsepower" placeholder="Horsepower" required>
+<input type="number" name="enginesize" placeholder="Engine Size" required>
+<input type="number" name="citympg" placeholder="City MPG" required>
+<input type="number" name="highwaympg" placeholder="Highway MPG" required>
 
-        <div>
-            <label>Engine Size</label>
-            <input type="number" name="enginesize" placeholder="e.g. 1300" required>
-        </div>
+<button type="submit">Predict Price</button>
 
-        <div>
-            <label>City MPG</label>
-            <input type="number" name="citympg" placeholder="e.g. 25" required>
-        </div>
+</form>
 
-        <div>
-            <label>Highway MPG</label>
-            <input type="number" name="highwaympg" placeholder="e.g. 30" required>
-        </div>
+{% if prediction_text %}
+<div class="result">
+💰 Estimated Price: {{ prediction_text }}
+</div>
+{% endif %}
 
-        <div class="full-width">
-            <button type="submit">🚀 Predict Price</button>
-        </div>
+{% if car_suggestions %}
+<h2 style="text-align:center;">Recommended Cars</h2>
 
-    </form>
-
-    {% if prediction_text %}
-    <div class="result-card">
-        💰 {{ prediction_text }}
+<div class="cards">
+{% for car in car_suggestions %}
+    <div class="card">
+        <img src="{{ car.img }}">
+        <h3>{{ car.name }}</h3>
+        <p>{{ car.brand }}</p>
     </div>
-    {% endif %}
+{% endfor %}
+</div>
+{% endif %}
 
 </div>
-
-<footer>
-    Made with ❤️ using Machine Learning
-</footer>
 
 </body>
 </html>
